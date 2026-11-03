@@ -2297,6 +2297,8 @@ dependencies = [
  "eframe",
  "egui",
  "image",
+ "wasm-bindgen-futures",
+ "web-sys",
 ]
 
 [[package]]

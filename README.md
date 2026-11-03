@@ -31,9 +31,24 @@ Run the tests:
 cargo test
 ```
 
+### Run in the browser (WebAssembly)
+
+The app also compiles to WebAssembly and runs as a static site.
+
+```bash
+rustup target add wasm32-unknown-unknown
+cargo install --locked trunk   # or: brew install trunk
+trunk serve --release          # dev server at http://127.0.0.1:8080
+trunk build --release          # static site in dist/
+```
+
+On the web, the startup options are read from the URL instead: `?name=acetone`, `?canvas=2-butene`, `&modern`.
+
+Deploy `dist/` to any static host (Vercel, Netlify, Cloudflare Pages, GitHub Pages). The included workflow `.github/workflows/pages.yml` builds and publishes to GitHub Pages on every push to `main` (enable it under Settings → Pages → Source: GitHub Actions). For Vercel, run `trunk build --release` locally or in CI and deploy the `dist/` folder, since Vercel's build image has no Rust toolchain.
+
 ### Command-line options
 
-| Flag | Description |
+| Flag (desktop only) | Description |
 | --- | --- |
 | `--name <name>` | Start in Name → Drawing mode with this name |
 | `--canvas <name>` | Preload the canvas from an IUPAC name |
@@ -52,3 +67,8 @@ cargo test
 | `src/layout.rs` | 2D coordinate generation for skeletal formulas |
 | `src/render.rs` | Skeletal formula painting and theme colours |
 | `src/tests.rs` | Naming and round-trip tests |
+| `index.html`, `Trunk.toml` | Web build (Trunk) |
+
+## License
+
+[MIT](LICENSE)

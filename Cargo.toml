@@ -7,3 +7,11 @@ edition = "2024"
 eframe = "0.37"
 egui = "0.37"
 image = { version = "0.25", default-features = false, features = ["png"] }
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen-futures = "0.4"
+web-sys = { version = "0.3", features = ["Window", "Location", "UrlSearchParams", "Document", "Element", "HtmlCanvasElement"] }
+
+[profile.release]
+opt-level = "s"
+lto = true

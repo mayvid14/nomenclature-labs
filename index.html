@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nomenclature Lab</title>
+  <meta name="description" content="Draw an organic molecule to get its IUPAC name, or type a name to see the structure." />
+  <link data-trunk rel="rust" data-wasm-opt="z" />
+  <style>
+    html, body { margin: 0; height: 100%; background: #f6f8fa; font-family: system-ui, sans-serif; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #loading { position: absolute; inset: 0; display: grid; place-items: center; color: #647080; }
+  </style>
+</head>
+<body>
+  <canvas id="the_canvas_id"></canvas>
+  <div id="loading">Loading Nomenclature Lab…</div>
+</body>
+</html>

@@ -6,8 +6,10 @@ mod parser;
 mod render;
 mod tests;
 
+#[cfg(not(target_arch = "wasm32"))]
 use std::path::PathBuf;
 
+#[cfg(not(target_arch = "wasm32"))]
 fn main() -> eframe::Result {
     let args: Vec<String> = std::env::args().collect();
     let mut opts = app::Options { screenshot: None, name: None, canvas: None, modern: false };
@@ -39,4 +41,36 @@ fn main() -> eframe::Result {
         ..Default::default()
     };
     eframe::run_native("Nomenclature Lab", native, Box::new(move |cc| Ok(Box::new(app::App::new(cc, opts)))))
+}
+
+#[cfg(target_arch = "wasm32")]
+fn main() {
+    use eframe::wasm_bindgen::JsCast as _;
+
+    let params = web_sys::window()
+        .and_then(|w| w.location().search().ok())
+        .map(|q| web_sys::UrlSearchParams::new_with_str(&q).unwrap())
+        .unwrap();
+    let opts = app::Options {
+        screenshot: None,
+        name: params.get("name"),
+        canvas: params.get("canvas"),
+        modern: params.has("modern"),
+    };
+    wasm_bindgen_futures::spawn_local(async move {
+        let canvas = web_sys::window()
+            .and_then(|w| w.document())
+            .and_then(|d| d.get_element_by_id("the_canvas_id"))
+            .and_then(|e| e.dyn_into::<web_sys::HtmlCanvasElement>().ok())
+            .expect("canvas #the_canvas_id not found");
+        let result = eframe::WebRunner::new()
+            .start(canvas, eframe::WebOptions::default(), Box::new(move |cc| Ok(Box::new(app::App::new(cc, opts)))))
+            .await;
+        if let Some(loading) = web_sys::window().and_then(|w| w.document()).and_then(|d| d.get_element_by_id("loading")) {
+            match result {
+                Ok(_) => loading.remove(),
+                Err(e) => loading.set_inner_html(&format!("The app failed to start: {e:?}")),
+            }
+        }
+    });
 }
